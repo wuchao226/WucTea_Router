@@ -1,0 +1,18 @@
+// 引用 groovy 插件，编译插件工程中的代码
+apply plugin: 'groovy'
+
+// 声明仓库地址
+repositories {
+  jcenter()
+  mavenCentral()
+}
+
+// 声明依赖的包
+dependencies {
+  // 声明了对Gradle框架的API的依赖。
+  // Creates a dependency on the API of the current version of Gradle
+  implementation gradleApi()
+  // 声明了Groovy语言的API的依赖。
+  // Creates a dependency on the Groovy that is distributed with the current version of Gradle.
+  implementation localGroovy()
+}

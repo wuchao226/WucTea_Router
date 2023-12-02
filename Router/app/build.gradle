@@ -4,6 +4,11 @@ plugins {
   id 'com.wuc.router'
 }
 
+// 使用 RouterExtension
+router {
+  wikiDir getRootDir().absolutePath
+}
+
 android {
   namespace 'com.wuc.router'
   compileSdk 34

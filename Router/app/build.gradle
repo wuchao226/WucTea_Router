@@ -1,10 +1,11 @@
 plugins {
   id 'com.android.application'
   id 'org.jetbrains.kotlin.android'
+  // 3、应用路由插件
   id 'com.wuc.router'
 }
 
-// 使用 RouterExtension
+// 4、向路由插件传递参数
 router {
   wikiDir getRootDir().absolutePath
 }

@@ -29,7 +29,11 @@ class DestinationProcessor : AbstractProcessor() {
      * @return
      */
     override fun process(set: MutableSet<out TypeElement>?, roundEnvironment: RoundEnvironment): Boolean {
-
+        // processingOver() 如果循环处理完成返回true，否则返回false
+        //  // 避免多次调用 process
+        if (roundEnvironment.processingOver()) {
+            return false
+        }
         println("$TAG >>> process start ...")
         // 获取所有标记了 @Destination 注解的 类的信息
         val allDestinationElements: Set<Element> = roundEnvironment.getElementsAnnotatedWith(Destination::class.java)

@@ -2,6 +2,7 @@ package com.wuc.router.processor
 
 import com.google.auto.service.AutoService
 import com.wuc.router.annotation.Destination
+import java.io.Writer
 import java.util.Collections
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
@@ -9,6 +10,7 @@ import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
+import javax.tools.JavaFileObject
 
 /**
  * @author     wuchao
@@ -75,7 +77,24 @@ class DestinationProcessor : AbstractProcessor() {
         builder.append("    }\n")
         builder.append("}\n")
 
+        val mappingFullClassName = "com.wuc.router.mapping.$className"
+
+        println("$TAG >>> mappingFullClassName = $mappingFullClassName")
         println("$TAG >>> class content = \n$builder")
+
+        // 写入自动生成的类到本地文件中
+        try {
+            val source: JavaFileObject = processingEnv.filer // 返回实现Filer接口的对象，用于创建文件、类和辅助文件
+                .createSourceFile(mappingFullClassName) // 创建源文件
+            val writer: Writer = source.openWriter()
+            writer.write(builder.toString())
+            writer.flush()
+            writer.close()
+        } catch (ex: Exception) {
+            throw RuntimeException("Error while create file", ex)
+        }
+
+        println("$TAG >>> process finish.")
         return false
     }
 

@@ -50,6 +50,8 @@ dependencies {
   androidTestImplementation 'androidx.test.ext:junit:1.1.5'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-  implementation project(':router-annotations')
-  kapt project(':router-processor')
+//  implementation project(':router-annotations')
+//  kapt project(':router-processor')
+  implementation 'com.wuc.router:router-annotations:1.0.0'
+  kapt 'com.wuc.router:router-processor:1.0.0'
 }

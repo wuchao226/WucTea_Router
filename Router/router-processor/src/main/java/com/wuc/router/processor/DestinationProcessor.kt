@@ -37,6 +37,9 @@ class DestinationProcessor : AbstractProcessor() {
             return false
         }
         println("$TAG >>> process start ...")
+
+        val rootDir = processingEnv.options["root_project_dir"]
+        println("$TAG >>> rootDir = $rootDir")
         // 获取所有标记了 @Destination 注解的 类的信息
         val allDestinationElements: Set<Element> = roundEnvironment.getElementsAnnotatedWith(Destination::class.java)
         println("$TAG >>> all Destination elements count = ${allDestinationElements.size}")

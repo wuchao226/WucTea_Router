@@ -38,6 +38,11 @@ android {
   kotlinOptions {
     jvmTarget = '1.8'
   }
+  kapt {
+    arguments {
+      arg("root_project_dir", rootProject.projectDir.absolutePath)
+    }
+  }
 }
 
 dependencies {
@@ -50,8 +55,8 @@ dependencies {
   androidTestImplementation 'androidx.test.ext:junit:1.1.5'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-//  implementation project(':router-annotations')
-//  kapt project(':router-processor')
-  implementation 'com.wuc.router:router-annotations:1.0.0'
-  kapt 'com.wuc.router:router-processor:1.0.0'
+  implementation project(':router-annotations')
+  kapt project(':router-processor')
+//  implementation 'com.wuc.router:router-annotations:1.0.0'
+//  kapt 'com.wuc.router:router-processor:1.0.0'
 }

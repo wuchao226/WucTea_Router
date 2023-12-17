@@ -1,7 +1,12 @@
 package com.wuc.router.processor
 
 import com.google.auto.service.AutoService
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.wuc.router.annotation.Destination
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
 import java.io.Writer
 import java.util.Collections
 import javax.annotation.processing.AbstractProcessor
@@ -57,6 +62,8 @@ class DestinationProcessor : AbstractProcessor() {
         builder.append("    public static Map<String, String> get() {\n\n")
         builder.append("        Map<String, String> mapping = new HashMap<>();\n\n")
 
+        val destinationJsonArray: JsonArray = JsonArray()
+
         // 遍历所有 @Destination 注解信息，挨个获取详细信息
         for (element in allDestinationElements) {
             val typeElement = element as TypeElement
@@ -75,6 +82,12 @@ class DestinationProcessor : AbstractProcessor() {
                 .append(", ")
                 .append("\"" + realPath + "\"")
                 .append(");\n")
+
+            val item = JsonObject()
+            item.addProperty("url", url)
+            item.addProperty("description", description)
+            item.addProperty("realPath", realPath)
+            destinationJsonArray.add(item)
         }
         builder.append("        return mapping;\n")
         builder.append("    }\n")
@@ -95,6 +108,33 @@ class DestinationProcessor : AbstractProcessor() {
             writer.close()
         } catch (ex: Exception) {
             throw RuntimeException("Error while create file", ex)
+        }
+
+        // 写入JSON到本地文件中
+
+        // 检测父目录是否存在
+        if (rootDir.isNullOrEmpty()) {
+            throw RuntimeException("root_project_dir not exist!")
+        }
+        val rootDirFile = File(rootDir)
+        if (!rootDirFile.exists()) {
+            throw RuntimeException("rootDirFile not exist!")
+        }
+        // 创建 router_mapping 子目录
+        val routerFileDir = File(rootDirFile, "router_mapping")
+        if (!routerFileDir.exists()) {
+            routerFileDir.mkdir()
+        }
+        val mappingFile = File(routerFileDir, "mapping_" + System.currentTimeMillis() + ".json")
+        // 写入json内容
+        try {
+            val out: BufferedWriter = BufferedWriter(FileWriter(mappingFile))
+            val jsonStr: String = destinationJsonArray.toString()
+            out.write(jsonStr)
+            out.flush()
+            out.close()
+        } catch (throwable: Throwable) {
+            throw RuntimeException("Error while writing json", throwable)
         }
 
         println("$TAG >>> process finish.")

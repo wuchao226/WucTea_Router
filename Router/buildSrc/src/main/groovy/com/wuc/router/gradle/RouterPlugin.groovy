@@ -1,4 +1,5 @@
 package com.wuc.router.gradle
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -11,6 +12,14 @@ class RouterPlugin implements Plugin<Project> {
     if (project.extensions.findByName("kapt") != null) {
       project.extensions.findByName("kapt").arguments {
         arg("root_project_dir", project.rootProject.projectDir.absolutePath)
+      }
+    }
+    // 2. 实现旧的构建产物的自动清理
+    project.clean.doFirst {
+      // 删除 上一次构建生成的 router_mapping目录
+      File routerMappingDir = new File(project.rootProject.projectDir, "router_mapping")
+      if (routerMappingDir.exists()) {
+        routerMappingDir.deleteDir()
       }
     }
     println("I am from RouterPlugin, apply from ${project.name}")

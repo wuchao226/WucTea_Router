@@ -2,10 +2,11 @@
 apply plugin: 'groovy'
 
 // 声明仓库地址
-//repositories {
-//  jcenter()
-//  mavenCentral()
-//}
+repositories {
+  jcenter()
+  google()
+  mavenCentral()
+}
 
 // 声明依赖的包
 dependencies {
@@ -15,8 +16,8 @@ dependencies {
   // 声明了Groovy语言的API的依赖。
   // Creates a dependency on the Groovy that is distributed with the current version of Gradle.
   implementation localGroovy()
+  implementation 'com.android.tools.build:gradle:7.4.1'
 }
-
 
 // 调用maven-publish插件用于发布 APG 3.6.0之前用的maven插件，之后都用maven-publish插件
 apply plugin: 'maven-publish'

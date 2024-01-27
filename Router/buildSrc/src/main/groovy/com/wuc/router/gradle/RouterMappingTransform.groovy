@@ -1,5 +1,6 @@
 package com.wuc.router.gradle
 
+import com.android.build.api.transform.Format
 import com.android.build.api.transform.QualifiedContent
 import com.android.build.api.transform.Transform
 import com.android.build.api.transform.TransformException
@@ -49,13 +50,40 @@ class RouterMappingTransform extends Transform {
   /**
    * 所有的class收集好以后，会被打包传入此方法
    * @param transformInvocation
-   * @throws TransformException
-   * @throws InterruptedException
-   * @throws IOException
+   * @throws TransformException* @throws InterruptedException* @throws IOException
    */
   @Override
-  void transform(TransformInvocation transformInvocation)
-      throws TransformException, InterruptedException, IOException {
+  void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
     super.transform(transformInvocation)
+    // 1. 遍历所有的Input
+    // 2. 对Input进行二次处理
+    // 3. 将Input拷贝到目标目录
+
+    // 遍历所有的输入
+    transformInvocation.inputs.each {
+
+      // 把 文件夹 类型的输入，拷贝到目标目录
+      it.directoryInputs.each { directoryInput ->
+        def destDir = transformInvocation.outputProvider
+            .getContentLocation(directoryInput.name,
+                directoryInput.contentTypes,
+                directoryInput.scopes,
+                Format.DIRECTORY)
+
+        FileUtils.copyFolder(directoryInput.file.absolutePath, destDir.absolutePath)
+      }
+
+      // 把 JAR 类型的输入，拷贝到目标目录
+      it.jarInputs.each { jarInput ->
+        def dest = transformInvocation.outputProvider.getContentLocation(
+            jarInput.name,
+            jarInput.contentTypes,
+            jarInput.scopes,
+            Format.JAR
+        )
+        FileUtils.copyFile(jarInput.file, dest)
+      }
+    }
+    println("${getName()} all mapping class name = ")
   }
 }
